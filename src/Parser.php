@@ -2,43 +2,6 @@
 
 namespace PDF;
 
-use Smalot\PdfParser\PDFObject;
-
-class Media
-{
-	
-	private $media;
-	const zoom = 1.5;
-	
-	public function __construct($media) {
-		$this->media[0] = $media[0] * self::zoom;
-		$this->media[1] = $media[1] * self::zoom;
-		$this->media[2] = $media[2] * self::zoom;
-		$this->media[3] = $media[3] * self::zoom;
-	}
-	
-	public function z($z) {
-		return $z * self::zoom;
-	}
-	
-	public function w() {
-		return $this->media[2];
-	}
-	
-	public function h() {
-		return $this->media[3];
-	}
-	
-	public function x($x) {
-		return $this->media[2] - $x * self::zoom;
-	}
-	
-	public function y($y) {
-		return $this->media[3] - $y * self::zoom;
-	}
-	
-}
-
 class Parser
 {
 	
@@ -49,7 +12,7 @@ class Parser
 		
 		$raw = new Raw();
 		$this->data = $raw->parse($content); //, false
-		
+		//print_r($this->data);
 		
 		foreach($this->data as $id => $obj) {
 			$opt = $obj['options'];
@@ -68,52 +31,103 @@ class Parser
 			
 		}
 		
-		//print_r($pages);
-		//print_r($page);
-	
-		$page = $this->getPage(0);
-		
-		
-		
-		
 	}
 	
+	public function getCount() {
+		return sizeof($this->pages);
+	}
+	
+	public function getPage($index, &$bounds) {
+		$page_id = $this->pages[$index];
+		$page = $this->data[$page_id];
+		
+		//print_r($page);
+		
+		$options = $page['options'];
+		
+		$media = new Media($this->page[$page_id]);
+		
+		
+		if(isset($options['Resources'])) {
+			
+			if(is_array($options['Resources'])) {
+				$res = $options['Resources'];
+			} else {
+				$res = isset($this->data[$options['Resources']]) ? $this->data[$options['Resources']] : [];
+				$res = $res['options'];
+				//print_r($res);
+			}
+			
+			$fonts = isset($res['Font']) ? $res['Font'] : [];
+			$fonts = $this->getFonts($fonts);
+			
+			$images = isset($res['XObject']) ? $res['XObject'] : [];
+			$gd = new MyGD;
+			$images = $gd->getImages($im, $this->data, $images);			
+			
+		}
+		
+		$content = $this->data[$options['Contents']]['stream'];
+		
+		$content = str_ireplace(')Tj', ') Tj', $content);
+		$commands = explode("\n", $content);
+		
+		if(DRAW && !DEBUG) {
+			$im = imagecreatetruecolor($media->w(), $media->h());
+			$white = imagecolorallocate($im, 255, 255, 255);
+			imagefilledrectangle($im, 0, 0, $media->w(), $media->h(), $white);
+		}
+		
+		$this->doCMD($im, $gd, $media, $fonts, $images, $commands, $bounds);
+		
+		if(DRAW && !DEBUG) {
+			foreach($bounds[0] as $k => $v) {
+				list($r, $g, $b) = sscanf($v[3], "%02x%02x%02x");
+				$color = imagecolorallocate($im, $r, $g, $b);
+				if($v[0] == 0) {
+					imageline($im, 0, (int)$v[1], $media->w(), (int)$v[1], $color);
+					imageline($im, 0, (int)$v[2], $media->w(), (int)$v[2], $color);
+				} else {
+					imageline($im, (int)$v[1], 0, (int)$v[1], $media->h(), $color);
+					imageline($im, (int)$v[2], 0, (int)$v[2], $media->h(), $color);
+				}
+			}
+			//
+			header('Content-Type: image/png');
+			imagepng($im);
+			imagedestroy($im);
+		}
+		
+		$result = $bounds[1];
+		unset($bounds[1]);
+		return $result;
+		
+	}
 	
 	private function getFonts($arr) {
 		//print_r($arr);
 		$fonts = [];
 		foreach($arr as $id => $obj) {
-			
 			$content = $this->data[$obj];
 			$opt = $content['options'];
 			//print_r($opt);
 			if(isset($opt['FontDescriptor'])) {
 				$opt2 = $this->data[$opt['FontDescriptor']]['options'];
-				$content['FontDescriptor'] = $opt2;
-				if(isset($opt2['FontFile2'])) {
+				$opt['FontDescriptor'] = $opt2;
+				/*if(isset($opt2['FontFile2'])) {
 					$content['FontFile2'] = $this->data[$opt2['FontFile2']];
 					//print_r($content['FontFile2']['options']);
 					$fnt = $content['FontFile2']['stream'];
-					
-
-					//print_r($fnt);
-					//die();
-					
-				}
+				}*/
 			}
-			
-			//print_r($content);
-			
-			
-			$fonts['/' . $id] = __DIR__ . '/PFHighwaySansPro-Light.ttf';
-			
-			
-			
+			//print_r($opt);
+			$fonts['/' . $id] = $opt;
+			$fonts['/' . $id]['file'] = __DIR__ . '/../PFHighwaySansPro-Light.ttf';
 		}
 		return $fonts;
 	}
 	
-	private function doCMD($im, $gd, $media, $fonts, $xobjects, $commands) {
+	private function doCMD($im, $gd, $media, $fonts, $xobjects, $commands, &$bounds) {
 		if(DEBUG) {
 			//print_r($commands);
 		}
@@ -147,8 +161,8 @@ class Parser
 		];
 		//path draw data
 		$path = [];
-		foreach($commands as $cmd) {
-			$p = explode(' ', $cmd);
+		foreach($commands as $cmd0) {
+			$p = explode(' ', $cmd0);
 			$cmd = array_pop($p);
 			
 			if(end($p) != 'Do') {
@@ -196,16 +210,16 @@ class Parser
 						$bt0['font'] = $p[0];
 						break;
 					case 'Tj': //Отображает текстовую строку
-						$gd->doPlain($im, $media, $cs, $bt0, $color, $fonts, $p);
+						$gd->doPlain($im, $media, $cs, $bt0, $color, $fonts, $p, $bounds);
 						break;
 					case 'rg': 	//Цвет RGB (non-stroking)
 					case 'RG': 	//Цвет RGB (stroking)
 								//3 элемента r g b между 0 и 1
-						$color[$cmd] = imagecolorallocate($im, $p[0] * 255, $p[1] * 255, $p[2] * 255);
+						$color[$cmd] = $gd->doColor($im, $p[0] * 255, $p[1] * 255, $p[2] * 255);
 						break;
 					case 'g': //Цвет gray (non-stroking)
 					case 'G': //Цвет gray (stroking)
-						$color[$cmd] = imagecolorallocate($im, $p[0] * 255, $p[0] * 255, $p[0] * 255);
+						$color[$cmd] = $gd->doColor($im, $p[0] * 255, $p[0] * 255, $p[0] * 255);
 						break;
 					case 'm': //Вложенный набор данных (новые координаты x y)
 						$path[$cmd] = $p;
@@ -222,10 +236,14 @@ class Parser
 					case 'S':
 						$gd->doStroke($im, $media, $cs, $color, $path);
 						break;
+					case 'Do':
+						$gd->doXObject($im, $media, $xobjects, $ss, $cs, $color, $p);
+						break;
 					case '':
 						break;
 					default:
-						 throw new \Exception('cmd: ' . $cmd . ' doesn\'t exist');
+						//print_r($cmd0);
+						throw new \Exception('cmd: ' . $cmd . ' doesn\'t exist');
 						break;
 				}
 			} else {
@@ -237,45 +255,6 @@ class Parser
 		}
 		
 	}
-		
-	private function getPage($index) {
-		$page_id = $this->pages[$index];
-		$page = $this->data[$page_id];
-		$options = $page['options'];
-		$media = new Media($this->page[$page_id]);
-		
-		$fonts = $options['Resources']['Font'];
-		$fonts = $this->getFonts($fonts);
-		
-		$gd = new MyGD;
-		
-		$images = $options['Resources']['XObject'];
-		$images = $gd->getImages($im, $this->data, $images);
-		
-		$content = $this->data[$options['Contents']]['stream'];
-		
-		
-		$content = str_ireplace(')Tj', ') Tj', $content);
-		$commands = explode("\n", $content);
-		
-		$im = imagecreatetruecolor($media->w(), $media->h());
-		$white = imagecolorallocate($im, 255, 255, 255);
-		imagefilledrectangle($im, 0, 0, $media->w(), $media->h(), $white);
-		
-		
-		$this->doCMD($im, $gd, $media, $fonts, $images, $commands);
-		
-		
-		if(!DEBUG) {
-			header('Content-Type: image/png');
-			imagepng($im);
-		}
-		imagedestroy($im);
-		
-	}
-	
-
-	
 	
 }
 
