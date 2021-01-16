@@ -1,6 +1,8 @@
 <?php
 	require __DIR__ . '/vendor/autoload.php';
 	
+	//error_reporting(E_ALL);
+	
 	function show_table($table, $is_excel) {
 		echo '<table border="1">';
 		$i = 0;
@@ -129,7 +131,7 @@
 		<ul>
 			<li>Загружаем <a href="https://www.tinkoff.ru/invest/broker_account/about/" target="_blank">отчет из тинькофф</a> или заполняем <a href="sample.xlsx" target="_blank">шаблон Excel</a></li>
 			<li>Генерируем dc0</li>
-			<li>Загружаем dc0 в <a href="https://www.gnivc.ru/software/fnspo/ndfl_3_4/" target="_blank">"Программa подготовки 3-НДФЛ"</a></li>
+			<li>Загружаем dc0 в <a href="https://www.gnivc.ru/software/fnspo/ndfl_3_4/" target="_blank">"Программу подготовки 3-НДФЛ"</a></li>
 		</ul>
 	</p>
 	<p>Одно из двух (xlsx или out-inc-state-2020.pdf):</p>
