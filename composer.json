@@ -1,0 +1,12 @@
+{
+	"name": "ndfl-app",
+	"description": "ndfl app",
+	"require": {
+        "smalot/pdfparser": "*"
+    },
+	"autoload": {
+        "psr-4": {
+            "PDF\\": "src"
+        }
+    }
+}
