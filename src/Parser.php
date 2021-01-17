@@ -196,8 +196,8 @@ class Parser
 						$bt0['tx'] = $p[0];
 						$bt0['ty'] = $p[1];
 						break;
-					case 'Tw': //Расстояние между слов (word spacing)
-					case 'Tc': //Расстояние между слов (word spacing)
+					case 'Tw': //Расстояние между словами (word spacing)
+					case 'Tc': //Расстояние между символами (char spacing)
 						$bt0[$cmd] = $p[0];
 						break;
 					case 'Tm': 	//Матрица трансформации 6 элементов
@@ -226,10 +226,10 @@ class Parser
 						break;
 					case 're':	//Добавить Rectangle в набор данных для отрисовки
 								//x y width height в пространстве пользователя
-					case 'l': //Линия их x1 y1 в новые x2 y2
+					case 'l': //Линия из x1 y1 в новые x2 y2
 						$path[$cmd][] = $p;
 						break;
-					case 'F': //Отрисовка fill nonzero? наборв данных
+					case 'F': //Отрисовка fill nonzero? наборов данных
 					case 'f':
 						$gd->doFill($im, $media, $cs, $color, $path);
 						break;

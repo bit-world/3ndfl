@@ -35,45 +35,48 @@ class Tinkoff
 		$base = [];
 		
 		foreach($pages as $page) {
+			
+			if(isset($page['r1'])) {
 				
-			foreach($page['r1'] as $k => $v1) {
-				$td[$k] = [];
-				$w5 = '';
-				foreach($v1 as $v) {
-					if($k == 'w5') {
-						$w5 .= $v[2] . ' ';
-						if(mb_strstr($w5, 'шт.') !== false) {
-							preg_match('/бумаге\s(.*)\.\sКоличество/', $w5, $m);
-							//print_r($m);
-							$td[$k][] = $m[1];
-							$w5 = '';
+				foreach($page['r1'] as $k => $v1) {
+					$td[$k] = [];
+					$w5 = '';
+					foreach($v1 as $v) {
+						if($k == 'w5') {
+							$w5 .= $v[2] . ' ';
+							if(mb_strstr($w5, 'шт.') !== false) {
+								preg_match('/бумаге\s(.*)\.\sКоличество/', $w5, $m);
+								//print_r($m);
+								$td[$k][] = $m[1];
+								$w5 = '';
+							}
+						} else {
+							if(mb_strstr($v[2], 'Руководитель') !== false) {
+								break;
+							}
+							$td[$k][] = $v[2];
 						}
-					} else {
-						if(mb_strstr($v[2], 'Руководитель') !== false) {
-							break;
-						}
-						$td[$k][] = $v[2];
 					}
 				}
+				unset($td['w4']);
+				
+				$count = count($td['w1']);
+				for($i = 0; $i < $count; $i++) {
+					$after_tax = str_ireplace(',', '.', $td['w2'][$i]);
+					$tax_sum = str_ireplace(',', '.', $td['w3'][$i]);
+					$before_tax = $after_tax + $tax_sum;
+					$base[] = [
+						$td['w1'][$i],
+						$td['w5'][$i],
+						$before_tax,
+						$tax_sum,
+						'840',
+						'840',
+						$td['w1'][$i] . '_' . $td['w5'][$i]
+					];
+				}
+				
 			}
-			unset($td['w4']);
-			
-			$count = count($td['w1']);
-			for($i = 0; $i < $count; $i++) {
-				$after_tax = str_ireplace(',', '.', $td['w2'][$i]);
-				$tax_sum = str_ireplace(',', '.', $td['w3'][$i]);
-				$before_tax = $after_tax + $tax_sum;
-				$base[] = [
-					$td['w1'][$i],
-					$td['w5'][$i],
-					$before_tax,
-					$tax_sum,
-					'840',
-					'840',
-					$td['w1'][$i] . '_' . $td['w5'][$i]
-				];
-			}
-			
 		
 		}
 		

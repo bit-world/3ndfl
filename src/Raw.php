@@ -2,8 +2,6 @@
 
 namespace PDF;
 
-use Smalot\PdfParser\RawData\RawDataParser;
-
 class Raw
 {
 	
