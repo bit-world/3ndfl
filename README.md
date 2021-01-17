@@ -11,11 +11,11 @@ Windows:
 
 ![alt step1](https://github.com/bit-world/3ndfl/blob/main/info/step1.png)
 
-https://github.com/bit-world/3ndfl/blob/main/info/step2.png
+![alt step2](https://github.com/bit-world/3ndfl/blob/main/info/step2.png)
 
-https://github.com/bit-world/3ndfl/blob/main/info/step3.png
+![alt step3](https://github.com/bit-world/3ndfl/blob/main/info/step3.png)
 
-https://github.com/bit-world/3ndfl/blob/main/info/step4.png
+![alt step4](https://github.com/bit-world/3ndfl/blob/main/info/step4.png)
 
 
 Загружаем отчет из тинькофф или заполняем шаблон Excel
