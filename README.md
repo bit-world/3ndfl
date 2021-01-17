@@ -22,14 +22,10 @@
 4. Если сервер запустился (шаг 3), то можно запусить программу в браузере по адресу **127.0.0.1**
 ![Шаг 4](https://github.com/bit-world/3ndfl/blob/main/info/step4.png)
 
+# Генерируем файл декларации
 
-Загружаем отчет из тинькофф или заполняем шаблон Excel
+1. Загружаем отчет Тинькофф или заполненный [шаблон Excel](https://github.com/bit-world/3ndfl/blob/main/sample.xlsx?raw=true)
 
-Генерируем dc0
+2. Нажимайем кнопку "Проверка", если данные подгрузились верно, можно генерировать файл декларации dc0
 
-Загружаем dc0 в "Программу подготовки 3-НДФЛ"
-
-
-Программа подготовки 3-НДФЛ https://www.gnivc.ru/software/fnspo/ndfl_3_4/
-
-Шаблон для заполнения таблицы Excel https://github.com/bit-world/3ndfl/blob/main/sample.xlsx?raw=true
+3. Загружаем dc0 в [Программу подготовки 3-НДФЛ](https://www.gnivc.ru/software/fnspo/ndfl_3_4/)
