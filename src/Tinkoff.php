@@ -60,11 +60,14 @@ class Tinkoff
 			
 			$count = count($td['w1']);
 			for($i = 0; $i < $count; $i++) {
+				$after_tax = str_ireplace(',', '.', $td['w2'][$i]);
+				$tax_sum = str_ireplace(',', '.', $td['w3'][$i]);
+				$before_tax = $after_tax + $tax_sum;
 				$base[] = [
 					$td['w1'][$i],
 					$td['w5'][$i],
-					str_ireplace(',', '.', $td['w2'][$i]),
-					str_ireplace(',', '.', $td['w3'][$i]),
+					$before_tax,
+					$tax_sum,
 					'840',
 					'840',
 					$td['w1'][$i] . '_' . $td['w5'][$i]
