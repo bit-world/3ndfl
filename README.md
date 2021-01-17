@@ -9,7 +9,7 @@ Windows:
 
 Запускаем программу
 
-https://github.com/bit-world/3ndfl/blob/main/info/step1.png
+![alt step1](https://github.com/bit-world/3ndfl/blob/main/info/step1.png)
 
 https://github.com/bit-world/3ndfl/blob/main/info/step2.png
 
