@@ -9,9 +9,12 @@ Windows:
 
 Запускаем программу
 
-![alt step1](https://github.com/bit-world/3ndfl/blob/main/info/step1.png)
+1) Открываем консоль по адресу папки 3ndfl (удерживайте Shift + правой кнопкой мыши щелкните папку)
+![alt step1](https://github.com/bit-world/3ndfl/blob/main/info/step1.png =275x165)
 
+В командной строке пишем путь до интерпретатора PHP (не забудьте распаковать zip архив) и добавляем параметры запуска встроенного веб-сервера -S 127.0.0.1:80
 ![alt step2](https://github.com/bit-world/3ndfl/blob/main/info/step2.png)
+
 
 ![alt step3](https://github.com/bit-world/3ndfl/blob/main/info/step3.png)
 
