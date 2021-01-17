@@ -10,8 +10,6 @@
 
 Скачиваем саму программу https://github.com/bit-world/3ndfl/archive/main.zip
 
-Запускаем программу
-
 ### 1. Открываем консоль по адресу папки 3ndfl (удерживайте **Shift** + правой кнопкой мыши щелкните папку)
 ![Шаг 1](https://github.com/bit-world/3ndfl/blob/main/info/step1.png)
 
