@@ -18,7 +18,7 @@
 		<td>Налог</td>
 		<td>Налог, руб</td>
 		<td>Процент</td>
-		<td>Доплатить</td>
+		<td>Доплатa</td>
 		<td>Валюта</td>
 		<td>Курс</td>
 		<td>Страна</td>
@@ -152,9 +152,11 @@ HTML;
 			$xlsx->next();
 			while($xlsx->valid()) {
 				$row = $xlsx->current();
+				$row[6] = $row[0] . $row[1];
 				$table[] = $row;
 				$xlsx->next();
 			}
+			//print_r($table);
 		} else {
 			$table = new PDF\Tinkoff;
 			$table = $table->parse($file_path);
