@@ -18,6 +18,7 @@
 		<td>Налог</td>
 		<td>Налог, руб</td>
 		<td>Процент</td>
+		<td>Доплатить</td>
 		<td>Валюта</td>
 		<td>Курс</td>
 		<td>Страна</td>
@@ -38,50 +39,65 @@ HTML;
 				$n3_date = $nalog->from_exel_date($n3_date);
 			}
 			//
+			$per = $nalog->nalog_round($el[3] / $el[2] * 100);
+			$rate = $nalog->nalog_round($n3[9] / $n3[10]);
+			if($per < 13) {
+				$add_nalog = $nalog->nalog_round($n3[15] * (13 - $per) / 100);
+			} else {
+				$add_nalog = 0;
+			}
+			//
 			$check = $el[6];
 			if(!isset($base[$check])) {
 				$base[$check] = true;
 				$er = ['', ''];
+				//add to sum
+				$i++;
+				$s1 += $el[2];
+				$s2 += $n3[15];
+				$s3 += $el[3];
+				$s4 += $n3[17];
+				$s6 += $add_nalog;
 			} else {
 				$er = ['style="color: red"', 'ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ, ИГНОРИРУЕМ'];
 			}
-			$per00 = $nalog->nalog_round($el[3] / $el[2] * 100) . '%';
-			$rate = $nalog->nalog_round($n3[9] / $n3[10]);
 			
 			//echo '<tr><td colspan="11">' . print_r($n3, true) . '</td></tr>';
 			
 			echo <<<HTML
-	<tr $er[0]>
-		<td>$n3_date</td>
-		<td>$el[1]</td>
-		<td>$el[2]</td>
-		<td>$n3[15]</td>
-		<td>$el[3]</td>
-		<td>$n3[17]</td>
-		<td>$per00</td>
-		<td>$n3[13]</td>
-		<td>$rate</td>
-		<td>$el[5]</td>
-		<td>$er[1]</td>
-	</tr>
+<tr $er[0]>
+	<td>$n3_date</td>
+	<td>$el[1]</td>
+	<td>$el[2]</td>
+	<td>$n3[15]</td>
+	<td>$el[3]</td>
+	<td>$n3[17]</td>
+	<td>$per%</td>
+	<td>$add_nalog</td>
+	<td>$n3[13]</td>
+	<td>$rate</td>
+	<td>$el[5]</td>
+	<td>$er[1]</td>
+</tr>
 HTML;
 			
-			$i++;
-			$s1 += $el[2];
-			$s2 += $n3[15];
-			$s3 += $el[3];
-			$s4 += $n3[17];
+			
 		}
 		$s5 = round($s3 / $s1 * 100, 2) . '%';
-		echo '<tr><td>Записей: ' . $i .  
-			'</td><td>Сумма</td>' .
-			'<td>' . $s1 . '</td>' . 
-			'<td>' . $s2 . '</td>' .
-			'<td>' . $s3 . '</td>' .
-			'<td>' . $s4 . '</td>' .
-			'<td>' . $s5 . '</td>' .
-			'<td colspan="4"></td></tr>';
-		echo '</table>';
+		echo <<<HTML
+<tr>
+	<td>Записей: $i</td>
+	<td></td>
+	<td>$s1</td>
+	<td>$s2</td>
+	<td>$s3</td>
+	<td>$s4</td>
+	<td>$s5</td>
+	<td>$s6</td>
+	<td colspan="4"></td>
+</tr></table>
+HTML;
+
 	}
 	
 	function ndfl3_format($in) {
