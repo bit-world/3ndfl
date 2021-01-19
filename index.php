@@ -4,15 +4,40 @@
 	//error_reporting(E_ALL);
 	
 	function show_table($table, $is_excel) {
-		echo '<table border="1">';
-		echo '<tr><td>Дата</td><td>Наименование</td>' .
-			'<td>Выплата</td><td>Налог</td>' .
-			'<td>Процент</td><td>Валюта</td><td>Страна</td>' .
-			'<td>Ошибки</td></tr>';
+		$to_excel = !$is_excel;
+		
+		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2020.xml', date('d.m.Y'));
+		
+		echo <<<HTML
+<table border="1">
+	<tr>
+		<td>Дата</td>
+		<td>Наименование</td>
+		<td>Выплата</td>
+		<td>Выплата, руб</td>
+		<td>Налог</td>
+		<td>Налог, руб</td>
+		<td>Процент</td>
+		<td>Валюта</td>
+		<td>Курс</td>
+		<td>Страна</td>
+		<td>Ошибки</td>
+	</tr>
+HTML;
+
 		$i = 0;
 		$s1 = 0;
 		$s2 = 0;
 		foreach($table as $el) {
+			$n3 = $nalog->gen_income(
+				ndfl3_format($el), 
+				$to_excel
+			)['other'];
+			$n3_date = $el[0];
+			if($is_excel) {
+				$n3_date = $nalog->from_exel_date($n3_date);
+			}
+			//
 			$check = $el[6];
 			if(!isset($base[$check])) {
 				$base[$check] = true;
@@ -20,31 +45,55 @@
 			} else {
 				$er = ['style="color: red"', 'ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ, ИГНОРИРУЕМ'];
 			}
-			if($is_excel) {
-				$el[0] = date('d.m.Y', strtotime('1899-12-30 +' . $el[0] . ' day'));
-			}
-			$per00 = round($el[3] / $el[2] * 100, 2) . '%';
-			echo '<tr ' . $er[0] . '><td>' . 
-					$el[0] . '</td><td>' . 
-					$el[1] . '</td><td>' . 
-					$el[2] . '</td><td>' . 
-					$el[3] . '</td><td>' . 
-					$per00 . '</td><td>' . 
-					$el[4] . '</td><td>' . 
-					$el[5] . '</td><td>' . 
-					$er[1] . '</td></tr>';
+			$per00 = $nalog->nalog_round($el[3] / $el[2] * 100) . '%';
+			$rate = $nalog->nalog_round($n3[9] / $n3[10]);
+			
+			//echo '<tr><td colspan="11">' . print_r($n3, true) . '</td></tr>';
+			
+			echo <<<HTML
+	<tr $er[0]>
+		<td>$n3_date</td>
+		<td>$el[1]</td>
+		<td>$el[2]</td>
+		<td>$n3[15]</td>
+		<td>$el[3]</td>
+		<td>$n3[17]</td>
+		<td>$per00</td>
+		<td>$n3[13]</td>
+		<td>$rate</td>
+		<td>$el[5]</td>
+		<td>$er[1]</td>
+	</tr>
+HTML;
+			
 			$i++;
-			$s1 += (double)$el[2];
-			$s2 += (double)$el[3];
+			$s1 += $el[2];
+			$s2 += $n3[15];
+			$s3 += $el[3];
+			$s4 += $n3[17];
 		}
-		$s3 = round($s2 / $s1 * 100, 2) . '%';
+		$s5 = round($s3 / $s1 * 100, 2) . '%';
 		echo '<tr><td>Записей: ' . $i .  
 			'</td><td>Сумма</td>' .
 			'<td>' . $s1 . '</td>' . 
 			'<td>' . $s2 . '</td>' .
 			'<td>' . $s3 . '</td>' .
-			'<td></td><td></td><td></td></tr>';
+			'<td>' . $s4 . '</td>' .
+			'<td>' . $s5 . '</td>' .
+			'<td colspan="4"></td></tr>';
 		echo '</table>';
+	}
+	
+	function ndfl3_format($in) {
+		$out = [
+			'date' => $in[0],
+			'name' => $in[1],
+			'in_usd' => $in[2],
+			'tax_usd' => $in[3],
+			'currency_code' => $in[4],
+			'country' => $in[5]
+		];
+		return $out;
 	}
 	
 	function ndfl3_save($table, $is_excel) {
@@ -52,27 +101,17 @@
 		
 		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2020.xml', date('d.m.Y'));
 		
-		
 		foreach($table as $el) {
 			$check = $el[6];
 			if(!isset($base[$check])) {
 				$base[$check] = true;
-				$nalog->append([
-					'date' => $el[0],
-					'name' => $el[1],
-					'in_usd' => $el[2],
-					'tax_usd' => $el[3],
-					'currency_code' => $el[4],
-					'country' => $el[5]
-				], $to_excel);
+				$n3 = ndfl3_format($el);
+				$nalog->append($n3, $to_excel);
 			}
 		}
 		
-		
-		
 		$file = $nalog->save();
 		//echo $file;
-		
 		//die();
 		
 		header('Cache-control: private');
@@ -97,9 +136,7 @@
 			$xlsx->next();
 			while($xlsx->valid()) {
 				$row = $xlsx->current();
-				$table[] = [
-					$row[0], $row[1], $row[2], $row[3], $row[4], $row[5]
-				];
+				$table[] = $row;
 				$xlsx->next();
 			}
 		} else {

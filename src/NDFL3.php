@@ -56,7 +56,7 @@ class NDFL3
 		return $this->code_name[$code];
 	}
 	
-	private function nalog_round($in) {
+	public function nalog_round($in) {
 		$out = round($in, 2);
 		return $out;
 	}
@@ -86,12 +86,11 @@ class NDFL3
 			}
 			//$array['other'][5] = date('d.m.Y', strtotime('1899-12-30 +' . $array['other'][5] . ' day'));
 			//$array['other'][6] = date('d.m.Y', strtotime('1899-12-30 +' . $array['other'][6] . ' day'));
-			
 		}
 		return $array;
 	}
 	
-	private function from_exel_date($date) {
+	public function from_exel_date($date) {
 		//excel date to d.m.Y
 		//43831 - 01.01.2020
 		//43961 - 10.05.2020
@@ -109,7 +108,7 @@ class NDFL3
 		return $diff;
 	}
 	
-	private function gen_income($data, $to_excel) {
+	public function gen_income($data, $to_excel) {
 		$base = [
 			'i' => 0,
 			'date' => '01.01.2020',
