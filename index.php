@@ -5,6 +5,10 @@
 	
 	function show_table($table, $is_excel) {
 		echo '<table border="1">';
+		echo '<tr><td>Дата</td><td>Наименование</td>' .
+			'<td>Выплата</td><td>Налог</td>' .
+			'<td>Процент</td><td>Валюта</td><td>Страна</td>' .
+			'<td>Ошибки</td></tr>';
 		$i = 0;
 		$s1 = 0;
 		$s2 = 0;
@@ -19,11 +23,13 @@
 			if($is_excel) {
 				$el[0] = date('d.m.Y', strtotime('1899-12-30 +' . $el[0] . ' day'));
 			}
+			$per00 = round($el[3] / $el[2] * 100, 2) . '%';
 			echo '<tr ' . $er[0] . '><td>' . 
 					$el[0] . '</td><td>' . 
 					$el[1] . '</td><td>' . 
 					$el[2] . '</td><td>' . 
 					$el[3] . '</td><td>' . 
+					$per00 . '</td><td>' . 
 					$el[4] . '</td><td>' . 
 					$el[5] . '</td><td>' . 
 					$er[1] . '</td></tr>';
@@ -31,11 +37,13 @@
 			$s1 += (double)$el[2];
 			$s2 += (double)$el[3];
 		}
+		$s3 = round($s2 / $s1 * 100, 2) . '%';
 		echo '<tr><td>Записей: ' . $i .  
-			'</td><td>Сумма</td><td>' . 
-			$s1 . '</td><td>' . 
-			$s2 . '</td><td>' .
-			'</td><td></td><td></td></tr>';
+			'</td><td>Сумма</td>' .
+			'<td>' . $s1 . '</td>' . 
+			'<td>' . $s2 . '</td>' .
+			'<td>' . $s3 . '</td>' .
+			'<td></td><td></td><td></td></tr>';
 		echo '</table>';
 	}
 	
