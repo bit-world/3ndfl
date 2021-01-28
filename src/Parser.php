@@ -63,8 +63,9 @@ class Parser
 			
 			$images = isset($res['XObject']) ? $res['XObject'] : [];
 			$gd = new MyGD;
-			$images = $gd->getImages($im, $this->data, $images);			
-			
+			if(DRAW) {
+				$images = $gd->getImages($im, $this->data, $images);			
+			}
 		}
 		
 		$content = $this->data[$options['Contents']]['stream'];
