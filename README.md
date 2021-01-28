@@ -6,7 +6,7 @@
 
 ## Windows:
 
-Устанавливаем интерпретатор PHP (встроенный веб-сервер) https://windows.php.net/downloads/releases/
+Устанавливаем интерпретатор PHP (встроенный веб-сервер) https://windows.php.net/downloads/releases/ любую свежую версию
 
 Скачиваем саму программу https://github.com/bit-world/3ndfl/archive/main.zip
 
