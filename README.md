@@ -6,7 +6,7 @@
 
 ## Windows:
 
-Устанавливаем интерпретатор PHP (встроенный веб-сервер) https://windows.php.net/downloads/releases/php-7.2.34-nts-Win32-VC15-x86.zip
+Устанавливаем интерпретатор PHP (встроенный веб-сервер) https://windows.php.net/downloads/releases/
 
 Скачиваем саму программу https://github.com/bit-world/3ndfl/archive/main.zip
 
