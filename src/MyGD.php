@@ -111,28 +111,35 @@ class MyGD
 		}
 	}
 	
-	public function doStroke($im, $m, $cs, $color, &$path) {
-		if(!DRAW || DEBUG) return;
-		if(DEBUG) {
-			//print_r($path);
-		}
+	public function doStroke($im, $m, $cs, $color, &$path, &$bounds) {
 		foreach($path['l'] as $k => $p) {
-			imageline($im,
-				$m->z($path['m'][0]), $m->y($path['m'][1]),
-				$m->z($p[0]), $m->y($p[1]),
-				$color['rg']
-			);
+			$x1 = $m->z($path['m'][0]);
+			$y1 = $m->y($path['m'][1]);
+			$x2 = $m->z($p[0]);
+			$y2 = $m->y($p[1]);
+			if(DRAW) {
+				imageline($im,
+					$x1, $y1,
+					$x2, $y2,
+					$color['rg']
+				);
+			}
+			//print_r($y1 . "\n");
+			if($y1 == $y2) {
+				$bounds[1]['stroke'][$y1] = 1;
+			}
 			unset($path['l'][$k]);
 		}
 	}
 	
 	public function doXObject($im, $m, $xobjects, &$ss, &$cs, $color, $p) {
-		if(!DRAW || DEBUG) return;
 		if(DEBUG) {
-			//print_r($p);
-			//print_r($ss);
-			//print_r($cs);
+			/*print_r($p);
+			print_r($ss);
+			print_r($cs);*/
 		}
+		if(!DRAW || DEBUG) return;
+		
 		
 		if(sizeof($p) > 1) {
 			$img_id = mb_substr($p[8], 1);
@@ -143,7 +150,7 @@ class MyGD
 			
 			imagecopyresampled(
 				$im, $src, 
-				$m->z($cs['ctm'][4]), $m->y($cs['ctm'][5]),
+				$m->z($cs['ctm'][4]), $m->y($cs['ctm'][5]+$cs['ctm'][3]),
 				0, 0,
 				$m->z($cs['ctm'][0]), $m->z($cs['ctm'][3]),
 				imagesx($src), imagesy($src)
@@ -158,11 +165,11 @@ class MyGD
 			//imagepng($src, 'tmp.png');
 			
 			if(DEBUG) {
-				print_r($cs);
+				/*print_r($cs);
 				print_r([
 					$m->z($cs['ctm'][4]), $m->y($cs['ctm'][5]),
 					$m->z(abs($cs['ctm'][0])), $m->z(abs($cs['ctm'][3])),
-				]);
+				]);*/
 			}
 			
 			imagecopyresampled(

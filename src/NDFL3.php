@@ -23,9 +23,10 @@ class NDFL3
 					doubleval($rate['Quantity']),
 				];
 			}
+			$y = date('Y') - 1;
 			for($m = 1; $m <= 12; $m++) {
 				for($d = 1; $d <= 31; $d++) {
-					$date = sprintf('%02d.%02d.2020', $d, $m);
+					$date = sprintf('%02d.%02d.' . $y, $d, $m);
 					if(isset($tmp_rates[$date])) {
 						$last = $tmp_rates[$date];
 					}
@@ -33,6 +34,7 @@ class NDFL3
 				}
 			}
 		}
+		//print_r($this->rates);
 		//
 		$this->dc0 = file_get_contents($file);
 		$this->dc0 = mb_convert_encoding($this->dc0, 'utf-8', 'windows-1251');

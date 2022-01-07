@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Currencies>
+<Currency Code="840">USD</Currency>
+<Currency Code="036">AUD</Currency>
+<Currency Code="051">AMD</Currency>
+<Currency Code="124">CAD</Currency>
+<Currency Code="156">CNY</Currency>
+<Currency Code="203">CZK</Currency>
+<Currency Code="208">DKK</Currency>
+<Currency Code="344">HKD</Currency>
+<Currency Code="348">HUF</Currency>
+<Currency Code="356">INR</Currency>
+<Currency Code="392">JPY</Currency>
+<Currency Code="398">KZT</Currency>
+<Currency Code="410">KRW</Currency>
+<Currency Code="417">KGS</Currency>
+<Currency Code="498">MDL</Currency>
+<Currency Code="578">NOK</Currency>
+<Currency Code="643">RUB</Currency>
+<Currency Code="702">SGD</Currency>
+<Currency Code="710">ZAR</Currency>
+<Currency Code="752">SEK</Currency>
+<Currency Code="756">CHF</Currency>
+<Currency Code="826">GBP</Currency>
+<Currency Code="860">UZS</Currency>
+<Currency Code="933">BYN</Currency>
+<Currency Code="934">TMT</Currency>
+<Currency Code="944">AZN</Currency>
+<Currency Code="946">RON</Currency>
+<Currency Code="949">TRY</Currency>
+<Currency Code="972">TJS</Currency>
+<Currency Code="975">BGN</Currency>
+<Currency Code="978">EUR</Currency>
+<Currency Code="980">UAH</Currency>
+<Currency Code="985">PLN</Currency>
+<Currency Code="986">BRL</Currency>
+</Currencies>

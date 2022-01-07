@@ -25,6 +25,7 @@ class Parser
 						break;
 					case 'Page':
 						$this->page[$id] = $opt['MediaBox'];
+						$this->page[$id]['r'] = isset($opt['Rotate']) ? $opt['Rotate'] : 0;
 						break;	
 				}
 			}
@@ -99,8 +100,16 @@ class Parser
 			imagedestroy($im);
 		}
 		
+		
+		foreach($bounds[1]['stroke'] as $k => $v) {
+			$bounds[2][] = $k;
+		}
+		sort($bounds[2]);
+		$bounds[1]['stroke'] = $bounds[2];
+		
 		$result = $bounds[1];
 		unset($bounds[1]);
+		unset($bounds[2]);
 		return $result;
 		
 	}
@@ -235,7 +244,7 @@ class Parser
 						$gd->doFill($im, $media, $cs, $color, $path);
 						break;
 					case 'S':
-						$gd->doStroke($im, $media, $cs, $color, $path);
+						$gd->doStroke($im, $media, $cs, $color, $path, $bounds);
 						break;
 					case 'Do':
 						$gd->doXObject($im, $media, $xobjects, $ss, $cs, $color, $p);

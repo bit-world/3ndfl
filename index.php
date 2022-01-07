@@ -6,7 +6,7 @@
 	function show_table($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2020.xml', date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2021.xml', date('d.m.Y'));
 		
 		echo <<<HTML
 <table border="1">
@@ -115,7 +115,7 @@ HTML;
 	function ndfl3_save($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2020.xml', date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2021.xml', date('d.m.Y'));
 		
 		foreach($table as $el) {
 			$check = $el[6];
@@ -197,7 +197,7 @@ HTML;
 			<li>Загружаем dc0 в <a href="https://www.gnivc.ru/software/fnspo/ndfl_3_4/" target="_blank">"Программу подготовки 3-НДФЛ"</a></li>
 		</ul>
 	</p>
-	<p>Одно из двух (xlsx или out-inc-state-2020.pdf):</p>
+	<p>Одно из двух (xlsx или out-inc-state-2021.pdf):</p>
 	<p>Excel:</p>
 	<form method="post" action="index.php" enctype="multipart/form-data">
 		<input type="file" name="userfile">
