@@ -6,7 +6,7 @@
 	function show_table($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2021.xml', date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base.dc1', 'CurrencyRates2021.xml', date('d.m.Y'));
 		
 		echo <<<HTML
 <table border="1">
@@ -29,20 +29,24 @@ HTML;
 		$i = 0;
 		$s1 = 0;
 		$s2 = 0;
+		$s3 = 0;
+		$s4 = 0;
+		$s5 = 0;
+		$s6 = 0;
 		foreach($table as $el) {
 			$n3 = $nalog->gen_income(
 				ndfl3_format($el), 
 				$to_excel
-			)['other'];
+			)['info'];
 			$n3_date = $el[0];
 			if($is_excel) {
 				$n3_date = $nalog->from_exel_date($n3_date);
 			}
 			//
 			$per = $nalog->nalog_round($el[3] / $el[2] * 100);
-			$rate = $nalog->nalog_round($n3[9] / $n3[10]);
+			$rate = $nalog->nalog_round($n3[10] / $n3[11]);
 			if($per < 13) {
-				$add_nalog = $nalog->nalog_round($n3[15] * (13 - $per) / 100);
+				$add_nalog = $nalog->nalog_round($n3[16] * (13 - $per) / 100);
 			} else {
 				$add_nalog = 0;
 			}
@@ -54,9 +58,9 @@ HTML;
 				//add to sum
 				$i++;
 				$s1 += $el[2];
-				$s2 += $n3[15];
+				$s2 += $n3[16];
 				$s3 += $el[3];
-				$s4 += $n3[17];
+				$s4 += $n3[18];
 				$s6 += $add_nalog;
 			} else {
 				$er = ['style="color: red"', 'ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ, ИГНОРИРУЕМ'];
@@ -69,12 +73,12 @@ HTML;
 	<td>$n3_date</td>
 	<td>$el[1]</td>
 	<td>$el[2]</td>
-	<td>$n3[15]</td>
+	<td>$n3[16]</td>
 	<td>$el[3]</td>
-	<td>$n3[17]</td>
+	<td>$n3[18]</td>
 	<td>$per%</td>
 	<td>$add_nalog</td>
-	<td>$n3[13]</td>
+	<td>$n3[14]</td>
 	<td>$rate</td>
 	<td>$el[5]</td>
 	<td>$er[1]</td>
@@ -115,7 +119,7 @@ HTML;
 	function ndfl3_save($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.dc0', 'CurrencyRates2021.xml', date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base.dc1', 'CurrencyRates2021.xml', date('d.m.Y'));
 		
 		foreach($table as $el) {
 			$check = $el[6];
@@ -133,7 +137,7 @@ HTML;
 		header('Cache-control: private');
 		header('Content-Type: application/octet-stream');
 		//header('Content-Length: '. sizeof($file));
-		header('Content-Disposition: filename=form.dc0');
+		header('Content-Disposition: filename=form.dc1');
 		echo $file;
 	}
 	
@@ -192,9 +196,9 @@ HTML;
 <body>
 	<p>
 		<ul>
-			<li>Загружаем <a href="https://www.tinkoff.ru/invest/broker_account/about/" target="_blank">отчет из тинькофф</a> или заполняем <a href="sample.xlsx" target="_blank">шаблон Excel</a></li>
-			<li>Генерируем dc0</li>
-			<li>Загружаем dc0 в <a href="https://www.gnivc.ru/software/fnspo/ndfl_3_4/" target="_blank">"Программу подготовки 3-НДФЛ"</a></li>
+			<li>Загружаем <a href="https://www.tinkoff.ru/invest/" target="_blank">отчет из тинькофф</a> или заполняем <a href="sample.xlsx" target="_blank">шаблон Excel</a></li>
+			<li>Генерируем dc1</li>
+			<li>Загружаем dc1 в <a href="https://www.gnivc.ru/software/fnspo/ndfl_3_4/" target="_blank">"Программу подготовки 3-НДФЛ"</a></li>
 		</ul>
 	</p>
 	<p>Одно из двух (xlsx или out-inc-state-2021.pdf):</p>
@@ -203,7 +207,7 @@ HTML;
 		<input type="file" name="userfile">
 		<input type="hidden" name="type" value="excel">
 		<input type="submit" name="test" value="Проверка">
-		<input type="submit" name="generate" value="Генерировать dc0">
+		<input type="submit" name="generate" value="Генерировать dc1">
 	</form>
 	<br><br><br>
 	<p>Tinkoff:</p>
@@ -211,7 +215,7 @@ HTML;
 		<input type="file" name="userfile">
 		<input type="hidden" name="type" value="tinkoff">
 		<input type="submit" name="test" value="Проверка">
-		<input type="submit" name="generate" value="Генерировать dc0">
+		<input type="submit" name="generate" value="Генерировать dc1">
 	</form>
 </body>
 </html>

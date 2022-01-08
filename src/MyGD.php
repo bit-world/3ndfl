@@ -5,7 +5,7 @@ namespace PDF;
 class MyGD
 {
 	
-	public function getImages($im, $data, $arr) {
+	public function getImages($data, $arr) {
 		//print_r($arr);
 		foreach($arr as $id => $obj) {
 			$image = $data[$obj];
@@ -215,14 +215,14 @@ class MyGD
 			while($j < $scan_line_size) {
 				if($ColorSpace == 'CalRGB' || $ColorSpace == 'DeviceRGB') {
 					
-					$r = ord($scan_line{$j++});
-					$g = ord($scan_line{$j++});
-					$b = ord($scan_line{$j++});
+					$r = ord($scan_line[$j++] ?? 0);
+					$g = ord($scan_line[$j++] ?? 0);
+					$b = ord($scan_line[$j++] ?? 0);
 					$col = imagecolorallocate($im, $r, $g, $b);
 					
 				} elseif($ColorSpace == 'DeviceGray') {
 					
-					$c = ord($scan_line{$j++});
+					$c = ord($scan_line[$j++] ?? 0);
 					$col = imagecolorallocate($im, $c, $c, $c);
 					
 				}

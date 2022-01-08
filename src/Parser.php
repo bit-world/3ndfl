@@ -65,7 +65,7 @@ class Parser
 			$images = isset($res['XObject']) ? $res['XObject'] : [];
 			$gd = new MyGD;
 			if(DRAW) {
-				$images = $gd->getImages($im, $this->data, $images);			
+				$images = $gd->getImages($this->data, $images);			
 			}
 		}
 		
@@ -78,6 +78,8 @@ class Parser
 			$im = imagecreatetruecolor($media->w(), $media->h());
 			$white = imagecolorallocate($im, 255, 255, 255);
 			imagefilledrectangle($im, 0, 0, $media->w(), $media->h(), $white);
+		} else {
+			$im = null;
 		}
 		
 		$this->doCMD($im, $gd, $media, $fonts, $images, $commands, $bounds);

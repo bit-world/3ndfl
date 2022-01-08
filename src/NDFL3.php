@@ -39,11 +39,27 @@ class NDFL3
 		$this->dc0 = file_get_contents($file);
 		$this->dc0 = mb_convert_encoding($this->dc0, 'utf-8', 'windows-1251');
 		$this->dc0 = explode('@', $this->dc0);
-		if($now != -1) {
+		if($now != -1) { //44569 - дата заполнения декларации
 			$this->dc0[1] = 
-				str_ireplace('44211', $this->to_exel_date($now), $this->dc0[1]);
+				str_ireplace('44569', $this->to_exel_date($now), $this->dc0[1]);
 		}
 		$this->log("load `{$file}`");
+	}
+	
+	private function dc_read($str) {
+		list($type, $i) = sscanf($str, '%14s %04d');
+		$str = mb_substr($str, 18);
+		
+		$i = 0;
+		while(mb_strlen($str) > 0) {
+			$i++;
+			sscanf($str, '%4d', $len);
+			$str = mb_substr($str, 4);
+			$data = mb_substr($str, 0, $len);
+			$str = mb_substr($str, $len);
+			//var_dump($len);
+			print_r($i . ') ' . $data . "\n");
+		}
 	}
 	
 	private function log($txt) {
@@ -84,10 +100,10 @@ class NDFL3
 			while(strlen($str) > 0) {
 				$count = (int)$this->str_get($str, 4);
 				$r = $this->str_get($str, $count);
-				$array['other'][] = str_pad($r, $count);
+				$array['info'][] = str_pad($r, $count);
 			}
-			//$array['other'][5] = date('d.m.Y', strtotime('1899-12-30 +' . $array['other'][5] . ' day'));
-			//$array['other'][6] = date('d.m.Y', strtotime('1899-12-30 +' . $array['other'][6] . ' day'));
+			//$array['info'][5] = date('d.m.Y', strtotime('1899-12-30 +' . $array['info'][5] . ' day'));
+			//$array['info'][6] = date('d.m.Y', strtotime('1899-12-30 +' . $array['info'][6] . ' day'));
 		}
 		return $array;
 	}
@@ -142,33 +158,35 @@ class NDFL3
 		//
 		$line = [
 			'type' => 'CurrencyIncome',
-			'i' => sprintf('%03d', $base['i']), //№
-			'other' => [
-				0 => 14,
+			'i' => sprintf('%04d', $base['i']),
+			'info' => [
+				0 => 0,
 				1 => 1010, //Дивиденды
 				2 => 'Дивиденды',
 				3 => $base['name'],
 				4 => $base['country'],
-				5 => $base['date'],
+				5 => 643, //Россия
 				6 => $base['date'],
-				7 => 1, //auto/manual
-				8 => $base['currency_code'],
-				9 => $base['exch_rate'],
-				10 => $base['exch_base'],
-				11 => $base['exch_rate'],
-				12 => $base['exch_base'],
-				13 => $base['currency'],
-				14 => $base['in_usd'],
-				15 => $base['in_rub'],
-				16 => $base['tax_usd'],
-				17 => $base['tax_rub'],
-				18 => 0,
+				7 => $base['date'],
+				8 => 1, //auto/manual
+				9 => $base['currency_code'],
+				10 => $base['exch_rate'],
+				11 => $base['exch_base'],
+				12 => $base['exch_rate'],
+				13 => $base['exch_base'],
+				14 => $base['currency'],
+				15 => $base['in_usd'],
+				16 => $base['in_rub'],
+				17 => $base['tax_usd'],
+				18 => $base['tax_rub'],
 				19 => 0,
 				20 => 0,
 				21 => 0,
-				22 => '',
+				22 => 0,
 				23 => 0,
-				24 => str_repeat(' ', 15),
+				24 => '',
+				25 => 0,
+				26 => str_repeat(' ', 15),
 			]
 		];
 		return $line;
@@ -176,7 +194,7 @@ class NDFL3
 	
 	private function str_writer($data) {
 		$result = $data['type'] . $data['i'];
-		foreach($data['other'] as $d) {
+		foreach($data['info'] as $d) {
 			$result .= sprintf('%04d', mb_strlen($d));
 			$result .= $d;
 		}
@@ -196,7 +214,7 @@ class NDFL3
 		$this->dc0[10] = $this->str_writer([
 			'type' => 'DeclForeign',
 			'i' => '',
-			'other' => [
+			'info' => [
 				1 => $this->last_i,
 				2 => str_repeat(' ', 18)
 			]
