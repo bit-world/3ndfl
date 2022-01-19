@@ -126,7 +126,7 @@ class MyGD
 			}
 			//print_r($y1 . "\n");
 			if($y1 == $y2) {
-				$bounds[1]['stroke'][$y1] = 1;
+				$bounds[1]['stroke'][(int)$y1] = 1;
 			}
 			unset($path['l'][$k]);
 		}
