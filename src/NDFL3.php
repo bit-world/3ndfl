@@ -41,7 +41,7 @@ class NDFL3
 		$this->dc0 = explode('@', $this->dc0);
 		if($now != -1) { //44569 - дата заполнения декларации
 			$this->dc0[1] = 
-				str_ireplace('44569', $this->to_exel_date($now), $this->dc0[1]);
+				str_ireplace('44569', $this->to_excel_date($now), $this->dc0[1]);
 		}
 		$this->log("load `{$file}`");
 	}
@@ -108,14 +108,14 @@ class NDFL3
 		return $array;
 	}
 	
-	public function from_exel_date($date) {
+	public function from_excel_date($date) {
 		//excel date to d.m.Y
 		//43831 - 01.01.2020
 		//43961 - 10.05.2020
 		return date('d.m.Y', strtotime('1899-12-30 +' . $date . ' day'));
 	}
 	
-	private function to_exel_date($date) {
+	private function to_excel_date($date) {
 		//d.m.Y to excel date
 		//43831 - 01.01.2020
 		//43961 - 10.05.2020
@@ -143,7 +143,7 @@ class NDFL3
 		if($to_excel) {
 			$exch = $this->get_rate($code, $base['date']);
 		} else {
-			$tmp_date = $this->from_exel_date($base['date']);
+			$tmp_date = $this->from_excel_date($base['date']);
 			$exch = $this->get_rate($code, $tmp_date);
 		}
 		$base['exch_rate'] = $exch[0];
@@ -153,7 +153,7 @@ class NDFL3
 		$base['tax_rub'] = $this->nalog_round($base['tax_usd'] * $base['exch_rate'] / $base['exch_base']);
 		//date
 		if($to_excel) {
-			$base['date'] = $this->to_exel_date($base['date']);
+			$base['date'] = $this->to_excel_date($base['date']);
 		}
 		//
 		$line = [

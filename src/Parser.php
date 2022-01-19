@@ -8,7 +8,7 @@ class Parser
 	private $pages, $page, $data;
 	
 	public function __construct($file) {
-		$content = file_get_contents($file, FILE_BINARY);
+		$content = file_get_contents($file);
 		
 		$raw = new Raw();
 		$this->data = $raw->parse($content); //, false

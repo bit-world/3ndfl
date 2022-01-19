@@ -40,7 +40,7 @@ HTML;
 			)['info'];
 			$n3_date = $el[0];
 			if($is_excel) {
-				$n3_date = $nalog->from_exel_date($n3_date);
+				$n3_date = $nalog->from_excel_date($n3_date);
 			}
 			//
 			$per = $nalog->nalog_round($el[3] / $el[2] * 100);
@@ -55,17 +55,17 @@ HTML;
 			if(!isset($base[$check])) {
 				$base[$check] = true;
 				$er = ['', ''];
-				//add to sum
-				$i++;
-				$s1 += $el[2];
-				$s2 += $n3[16];
-				$s3 += $el[3];
-				$s4 += $n3[18];
-				$s6 += $add_nalog;
 			} else {
-				$er = ['style="color: red"', 'ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ, ИГНОРИРУЕМ'];
+				$er = ['style="color: red"', 'ВОЗМОЖНО, ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ'];
 			}
-			
+			//add to sum
+			$i++;
+			$s1 += $el[2];
+			$s2 += $n3[16];
+			$s3 += $el[3];
+			$s4 += $n3[18];
+			$s6 += $add_nalog;
+		
 			//echo '<tr><td colspan="11">' . print_r($n3, true) . '</td></tr>';
 			
 			echo <<<HTML
@@ -125,9 +125,9 @@ HTML;
 			$check = $el[6];
 			if(!isset($base[$check])) {
 				$base[$check] = true;
-				$n3 = ndfl3_format($el);
-				$nalog->append($n3, $to_excel);
 			}
+			$n3 = ndfl3_format($el);
+			$nalog->append($n3, $to_excel);
 		}
 		
 		$file = $nalog->save();
@@ -156,6 +156,7 @@ HTML;
 			$xlsx->next();
 			while($xlsx->valid()) {
 				$row = $xlsx->current();
+				if(empty($row)) break;
 				$row[6] = $row[0] . $row[1];
 				$table[] = $row;
 				$xlsx->next();

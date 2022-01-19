@@ -104,7 +104,7 @@ class Tinkoff
 				//print_r($max_y);
 				//print_r($td);
 				
-				$count = count($td['w1']);
+				$count = is_countable($td['w1']) ? count($td['w1']) : 0;
 				for($i = 0; $i < $count; $i++) {
 					//$before_tax = floatval(str_ireplace(',', '.', $td['w6'][$i]));
 					$tax_sum = floatval(str_ireplace(',', '.', $td['w7'][$i]));
