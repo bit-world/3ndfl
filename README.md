@@ -4,7 +4,7 @@
 
 https://t.me/invest_3ndfl_bot
 
-ПРОМОКОД: GIT_3NDFL
+ПРОМОКОД: INVEST_GIT_3NDFL
 
 ## Windows:
 
