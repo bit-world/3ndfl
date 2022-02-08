@@ -2,9 +2,9 @@
 
 ## Онлайн:
 
-https://t.me/invest_3ndfl_bot
-
 ПРОМОКОД: INVEST_GIT_3NDFL
+
+https://t.me/invest_3ndfl_bot
 
 ## Windows:
 
