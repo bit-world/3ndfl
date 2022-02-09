@@ -45,7 +45,7 @@ class Tinkoff
 		$parser = new Parser($file);
 		
 		$bounds[0] = [
-			'r1' => [0, 255, 880, 'ff0000'],
+			'r1' => [0, -1, 880, 'ff0000'],
 			'w1' => [1, 120, 210, '00ff00'],
 			'w2' => [1, 247, 457, '00ff00'],
 			'w3' => [1, 577, 675, '00ff00'],
@@ -59,9 +59,6 @@ class Tinkoff
 		
 		$count = $parser->getCount();
 		for($i = 0; $i < $count; $i++) {
-			if($i == 1) {
-				$bounds[0]['r1'] = [0, 180, 880, 'ff0000'];
-			}
 			$pages[$i] = $parser->getPage($i, $bounds);
 			//break;
 		}

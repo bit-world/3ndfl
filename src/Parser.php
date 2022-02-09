@@ -82,6 +82,12 @@ class Parser
 			$im = null;
 		}
 		
+		//table starts
+		$stroke = $this->getBounds($gd, $media, $commands);
+		$stroke = array_keys($stroke);
+		sort($stroke);
+		//print_r($stroke);
+		$bounds[0]['r1'][1] = $stroke[3];
 		$this->doCMD($im, $gd, $media, $fonts, $images, $commands, $bounds);
 		
 		if(DRAW && !DEBUG) {
@@ -137,6 +143,29 @@ class Parser
 			$fonts['/' . $id]['file'] = __DIR__ . '/../PFHighwaySansPro-Light.ttf';
 		}
 		return $fonts;
+	}
+	
+	private function getBounds($gd, $media, $commands) {
+		$stroke = [];
+		$path = [];
+		foreach($commands as $cmd0) {
+			$p = explode(' ', $cmd0);
+			$cmd = array_pop($p);
+			if(end($p) != 'Do') {
+				switch($cmd) {
+					case 'm': //Вложенный набор данных (новые координаты x y)
+						$path[$cmd] = $p;
+						break;
+					case 'l': //Линия из x1 y1 в новые x2 y2
+						$path[$cmd][] = $p;
+						break;
+					case 'S':
+						$gd->getStroke($media, $path, $stroke);
+						break;
+				}
+			}
+		}
+		return $stroke;
 	}
 	
 	private function doCMD($im, $gd, $media, $fonts, $xobjects, $commands, &$bounds) {

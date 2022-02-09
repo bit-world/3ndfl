@@ -111,6 +111,17 @@ class MyGD
 		}
 	}
 	
+	public function getStroke($m, &$path, &$bounds) {
+		foreach($path['l'] as $k => $p) {
+			$y1 = $m->y($path['m'][1]);
+			$y2 = $m->y($p[1]);
+			if($y1 == $y2) {
+				$bounds[(int)$y1] = 1;
+			}
+			unset($path['l'][$k]);
+		}
+	}
+	
 	public function doStroke($im, $m, $cs, $color, &$path, &$bounds) {
 		foreach($path['l'] as $k => $p) {
 			$x1 = $m->z($path['m'][0]);
