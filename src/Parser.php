@@ -6,6 +6,7 @@ class Parser
 {
 	
 	private $pages, $page, $data;
+	private $flipped_pages;
 	
 	public function __construct($file) {
 		$content = file_get_contents($file);
@@ -22,15 +23,24 @@ class Parser
 				switch($opt['Type']) {
 					case 'Pages':
 						$this->pages = $opt['Kids'];
+						$this->flipped_pages = array_flip($this->pages);
 						break;
 					case 'Page':
-						$this->page[$id] = $opt['MediaBox'];
-						$this->page[$id]['r'] = isset($opt['Rotate']) ? $opt['Rotate'] : 0;
+						$r = isset($opt['Rotate']) ? $opt['Rotate'] : 0;
+						if($r == 90) {
+							$this->page[$id] = $opt['MediaBox'];
+							$this->page[$id]['r'] = $r;
+						} else {
+							$x = $this->flipped_pages[$id];
+							unset($this->pages[$x]);
+						}
 						break;	
 				}
 			}
 			
 		}
+		
+		//print_r($this->pages);
 		
 	}
 	
