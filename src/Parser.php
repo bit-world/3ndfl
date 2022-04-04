@@ -8,6 +8,35 @@ class Parser
 	private $pages, $page, $data;
 	private $flipped_pages;
 	
+	private function getCatalog(&$data) {
+		foreach($data as $options) {
+			$options = $options['options'];
+			if(isset($options['Type']) && $options['Type'] == 'Catalog') {
+				return $options['Pages'];
+			}
+		}
+	}
+	
+	private function getPages(&$data, $_id) {
+		$current = $data[$_id];
+		$options = $current['options'];
+		$pages = [];
+		if(isset($options['Type']) && $options['Type'] == 'Pages') {
+			$kids = $options['Kids'];
+			foreach($kids as $id => $kid) {
+				$p = $this->getPages($data, $kid);
+				if(is_array($p)) {
+					$pages = array_merge($pages, $p);
+				} else {
+					$pages[] = $p;
+				}
+			}
+		} else {
+			return $_id;
+		}
+		return $pages;
+	}
+	
 	public function __construct($file) {
 		$content = file_get_contents($file);
 		
@@ -15,16 +44,23 @@ class Parser
 		$this->data = $raw->parse($content); //, false
 		//print_r($this->data);
 		
+		
+		$_ctg = $this->getCatalog($this->data);
+		//print_r($_ctg);
+		$this->pages = $this->getPages($this->data, $_ctg);
+		$this->flipped_pages = array_flip($this->pages);
+		//print_r($this->pages);
+		
+
 		foreach($this->data as $id => $obj) {
 			$opt = $obj['options'];
 			$st = $obj['stream'];
+			
+			//print_r($id);
+			//print_r($opt);
 
 			if(isset($opt['Type'])) {
 				switch($opt['Type']) {
-					case 'Pages':
-						$this->pages = $opt['Kids'];
-						$this->flipped_pages = array_flip($this->pages);
-						break;
 					case 'Page':
 						$r = isset($opt['Rotate']) ? $opt['Rotate'] : 0;
 						if($r == 90) {

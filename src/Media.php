@@ -5,7 +5,7 @@ namespace PDF;
 class Media
 {
 	
-	private $media;
+	private $media, $rotate;
 	const zoom = 1.5;
 	
 	public function __construct($media) {
