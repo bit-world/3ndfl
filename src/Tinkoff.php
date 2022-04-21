@@ -101,6 +101,8 @@ class Tinkoff
 				//print_r($max_y);
 				//print_r($td);
 				
+				$nalog_year = date('Y') - 1;
+				
 				if(isset($td['w1'])) {
 					$count = is_countable($td['w1']) ? count($td['w1']) : 0;
 					for($i = 0; $i < $count; $i++) {
@@ -108,15 +110,18 @@ class Tinkoff
 						$tax_sum = floatval(str_ireplace(',', '.', $td['w7'][$i]));
 						$after_tax = floatval(str_ireplace(',', '.', $td['w8'][$i]));
 						$before_tax = $after_tax + $tax_sum;
-						$base[] = [
-							$td['w1'][$i], //date
-							$td['w2'][$i], //name
-							$before_tax,
-							$tax_sum,
-							$this->get_okv($td['w9'][$i]), //currency_code
-							$this->get_oksm($td['w3'][$i]), //country
-							$td['w1'][$i] . '_' . $td['w5'][$i]
-						];
+						$year = (int)substr($td['w1'][$i], -4);
+						if($nalog_year == $year) {
+							$base[] = [
+								$td['w1'][$i], //date
+								$td['w2'][$i], //name
+								$before_tax,
+								$tax_sum,
+								$this->get_okv($td['w9'][$i]), //currency_code
+								$this->get_oksm($td['w3'][$i]), //country
+								$td['w1'][$i] . '_' . $td['w5'][$i]
+							];
+						}
 					}
 				}
 				
