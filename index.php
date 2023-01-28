@@ -61,6 +61,9 @@ HTML;
 			} else {
 				$er = ['style="color: red"', 'ВОЗМОЖНО, ЗАПИСЬ ДУБЛИРУЕТСЯ В ОТЧЕТЕ'];
 			}
+			if($el[5] == null) {
+				$er = ['style="color: red"', 'СТРАНА ОТСУТСТВУЕТ В OKSM: ' . $el[7]];
+			}
 			//add to sum
 			$i++;
 			$s1 += $el[2];

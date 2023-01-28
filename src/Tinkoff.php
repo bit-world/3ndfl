@@ -12,7 +12,10 @@ class Tinkoff
 	
 	private function get_oksm($code) {
 		$code = mb_strtoupper($code);
-		return $this->oksm[$code];
+		if(isset($this->oksm[$code])) {
+			return $this->oksm[$code];
+		}
+		return null;
 	}
 	
 	private function get_okv($code) {
@@ -79,7 +82,7 @@ class Tinkoff
 						if(mb_strstr($v[2], 'Рыжиков') !== false) {
 							break;
 						}
-						if($k == 'w2') {
+						if($k == 'w2' || $k == 'w3') {
 							$w2_m = $page['stroke'][$w2_i];
 							if($v[1] >= $w2_m) {
 								$td[$k][] = trim($w2);
@@ -118,8 +121,9 @@ class Tinkoff
 								$before_tax,
 								$tax_sum,
 								$this->get_okv($td['w9'][$i]), //currency_code
-								$this->get_oksm($td['w3'][$i]), //country
-								$td['w1'][$i] . '_' . $td['w5'][$i]
+								$this->get_oksm($td['w3'][$i]), //country code
+								$td['w1'][$i] . '_' . $td['w5'][$i],
+								$td['w3'][$i] //country name
 							];
 						}
 					}
