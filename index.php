@@ -172,10 +172,14 @@ HTML;
 			$table = new PDF\Tinkoff;
 			$table = $table->parse($file_path);
 		}
-		if($show) {
-			show_table($table, $is_excel);
+		if(sizeof($table) > 0) {
+			if($show) {
+				show_table($table, $is_excel);
+			} else {
+				ndfl3_save($table, $is_excel);
+			}
 		} else {
-			ndfl3_save($table, $is_excel);
+			echo 'Вы не получали доход за пределами РФ, по которому налог удерживался эмитентом, в запрашиваемый период. Если уверены, что тут должны быть операции обратитесь в поддержку.';
 		}
 	}
 	

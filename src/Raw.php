@@ -30,6 +30,11 @@ class Raw
 		return $result;
 	}
 	
+	private function hex_decode($value)
+    {
+		return $value;
+    }
+	
 	private function parseHeaderElement($type, $value)
     {
         switch ($type) {
@@ -46,7 +51,7 @@ class Raw
             case '(':
                 return $value;
             case '<':
-                return $this->parseHeaderElement('(', ElementHexa::decode($value));
+                return $this->parseHeaderElement('(', $this->hex_decode($value));
             case '/':
                 return $value;
             case '[':

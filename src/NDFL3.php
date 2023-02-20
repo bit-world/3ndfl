@@ -12,18 +12,25 @@ class NDFL3
 		$currency_rates = simplexml_load_file($currency_file);
 		$this->rates = [];
 		$this->code_name = [];
+		$y = date('Y') - 1;
 		foreach($currency_rates->Currency as $currency) {
 			$code = (string)$currency['Code'];
 			$this->code_name[$code] = (string)$currency['Name'];
 			$tmp_rates = [];
+			$stop = false;
 			foreach($currency->TendersDateRate as $rate) {
 				$date = (string)$rate['Date'];
+				$date_y = substr($date, -4);
+				if($date_y == $y) 
+					$stop = true;
 				$tmp_rates[$date] = [
 					doubleval(str_ireplace(',', '.', $rate['Rate'])),
 					doubleval($rate['Quantity']),
 				];
-			}
-			$y = date('Y') - 1;
+				if(!$stop) {
+					$last = $tmp_rates[$date];
+				}
+			}			
 			for($m = 1; $m <= 12; $m++) {
 				for($d = 1; $d <= 31; $d++) {
 					$date = sprintf('%02d.%02d.' . $y, $d, $m);
@@ -124,6 +131,11 @@ class NDFL3
 		$diff = $excel_start->diff($our_date);
 		$diff = $diff->format('%r%a') + 1;
 		return $diff;
+	}
+	
+	public function to_rub($code, $date, $sum) {
+		$exch = $this->get_rate($code, $date);
+		return $this->nalog_round($sum * $exch[0] / $exch[1]);
 	}
 	
 	public function gen_income($data, $to_excel) {

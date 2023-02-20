@@ -44,7 +44,6 @@ class Tinkoff
 		//print_r($this->okv);
 		
 		//Output.pdf
-		//out-inc-state-2020.pdf
 		$parser = new Parser($file);
 		
 		$bounds[0] = [
@@ -61,84 +60,91 @@ class Tinkoff
 		];
 		
 		$count = $parser->getCount();
-		for($i = 0; $i < $count; $i++) {
-			$pages[$i] = $parser->getPage($i, $bounds);
-			//break;
-		}
 		
-		$base = [];
-		
-		foreach($pages as $page) {
+		if($count > 0) {
 			
-			//print_r($page);
-			
-			if(isset($page['r1'])) {
-				
-				foreach($page['r1'] as $k => $v1) {
-					$td[$k] = [];
-					$w2 = '';
-					$w2_i = 4;
-					foreach($v1 as $v) {
-						if(mb_strstr($v[2], 'Рыжиков') !== false) {
-							break;
-						}
-						if($k == 'w2' || $k == 'w3') {
-							$w2_m = $page['stroke'][$w2_i];
-							if($v[1] >= $w2_m) {
-								$td[$k][] = trim($w2);
-								$w2 = '';
-								$w2_i++;
-							}
-							$w2 .= $v[2] . ' ';
-							//
-							if($v == end($v1)) {
-								$td[$k][] = trim($w2);
-							}
-						} else {
-							$td[$k][] = $v[2];
-						}
-						
-					}
-				}
-				
-				//print_r($max_y);
-				//print_r($td);
-				
-				$nalog_year = date('Y') - 1;
-				
-				if(isset($td['w1'])) {
-					$count = is_countable($td['w1']) ? count($td['w1']) : 0;
-					for($i = 0; $i < $count; $i++) {
-						//$before_tax = floatval(str_ireplace(',', '.', $td['w6'][$i]));
-						$tax_sum = floatval(str_ireplace(',', '.', $td['w7'][$i]));
-						$after_tax = floatval(str_ireplace(',', '.', $td['w8'][$i]));
-						$before_tax = $after_tax + $tax_sum;
-						$year = (int)substr($td['w1'][$i], -4);
-						if($nalog_year == $year) {
-							$base[] = [
-								$td['w1'][$i], //date
-								$td['w2'][$i], //name
-								$before_tax,
-								$tax_sum,
-								$this->get_okv($td['w9'][$i]), //currency_code
-								$this->get_oksm($td['w3'][$i]), //country code
-								$td['w1'][$i] . '_' . $td['w5'][$i],
-								$td['w3'][$i] //country name
-							];
-						}
-					}
-				}
-				
-				unset($td);
-				
+			for($i = 0; $i < $count; $i++) {
+				$pages[$i] = $parser->getPage($i, $bounds);
+				//break;
 			}
-		
+			
+			$base = [];
+			
+			foreach($pages as $page) {
+				
+				//print_r($page);
+				
+				if(isset($page['r1'])) {
+					
+					foreach($page['r1'] as $k => $v1) {
+						$td[$k] = [];
+						$w2 = '';
+						$w2_i = 4;
+						foreach($v1 as $v) {
+							if(mb_strstr($v[2], 'Рыжиков') !== false) {
+								break;
+							}
+							if($k == 'w2' || $k == 'w3') {
+								$w2_m = $page['stroke'][$w2_i];
+								if($v[1] >= $w2_m) {
+									$td[$k][] = trim($w2);
+									$w2 = '';
+									$w2_i++;
+								}
+								$w2 .= $v[2] . ' ';
+								//
+								if($v == end($v1)) {
+									$td[$k][] = trim($w2);
+								}
+							} else {
+								$td[$k][] = $v[2];
+							}
+							
+						}
+					}
+					
+					//print_r($max_y);
+					//print_r($td);
+					
+					$nalog_year = date('Y') - 1;
+									
+					if(isset($td['w9'])) {
+						$count = is_countable($td['w1']) ? count($td['w1']) : 0;
+						for($i = 0; $i < $count; $i++) {
+							//$before_tax = floatval(str_ireplace(',', '.', $td['w6'][$i]));
+							$tax_sum = floatval(str_ireplace(',', '.', $td['w7'][$i]));
+							$after_tax = floatval(str_ireplace(',', '.', $td['w8'][$i]));
+							$before_tax = $after_tax + $tax_sum;
+							$year = (int)substr($td['w1'][$i], -4);
+							if($nalog_year == $year) {
+								$base[] = [
+									$td['w1'][$i], //date
+									$td['w2'][$i], //name
+									$before_tax,
+									$tax_sum,
+									$this->get_okv($td['w9'][$i]), //currency_code
+									$this->get_oksm($td['w3'][$i]), //country code
+									$td['w1'][$i] . '_' . $td['w5'][$i],
+									$td['w3'][$i] //country name
+								];
+							}
+						}
+					}
+					
+					unset($td);
+					
+				}
+			
+			}
+			
+			
+			return $base;
+			
 		}
-		
 		//die();
 		//print_r($base);
 		
-		return $base;
+		return [];
 		
 	}
 	
