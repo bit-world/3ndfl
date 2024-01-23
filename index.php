@@ -2,14 +2,14 @@
 	require __DIR__ . '/vendor/autoload.php';
 	
 	//error_reporting(E_ALL);
-	define('EXT', 'dc2');
-	define('REPORT', 'OUT_INC_STATE_REPORT.pdf');
-	define('CurrencyRates', 'CurrencyRates2022.xml');
+	define('EXT', 'dc3');
+	define('REPORT', 'Справка_о_доходах_за_пределами_РФ_2024.pdf');
+	define('CurrencyRates', 'base/CurrencyRates2023.xml');
 	
 	function show_table($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.' . EXT, CurrencyRates, date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base/base.' . EXT, CurrencyRates, date('d.m.Y'));
 		
 		echo <<<HTML
 <table border="1">
@@ -125,7 +125,7 @@ HTML;
 	function ndfl3_save($table, $is_excel) {
 		$to_excel = !$is_excel;
 		
-		$nalog = new PDF\NDFL3('base.' . EXT, CurrencyRates, date('d.m.Y'));
+		$nalog = new PDF\NDFL3('base/base.' . EXT, CurrencyRates, date('d.m.Y'));
 		
 		foreach($table as $el) {
 			$check = $el[6];

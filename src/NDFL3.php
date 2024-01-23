@@ -48,7 +48,7 @@ class NDFL3
 		$this->dc0 = explode('@', $this->dc0);
 		if($now != -1) { //44569 - дата заполнения декларации
 			$this->dc0[1] = 
-				str_ireplace('44569', $this->to_excel_date($now), $this->dc0[1]);
+				str_ireplace('45314', $this->to_excel_date($now), $this->dc0[1]);
 		}
 		$this->log("load `{$file}`");
 	}

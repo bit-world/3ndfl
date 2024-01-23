@@ -25,7 +25,7 @@ class Tinkoff
 	
 	public function parse($file) {
 		
-		$oksm = simplexml_load_file('oksm.xml');
+		$oksm = simplexml_load_file('base/oksm.xml');
 		$this->oksm = [];
 		foreach($oksm->Country as $country) {
 			$icode = (string)$country['Code'];
@@ -34,7 +34,7 @@ class Tinkoff
 		}
 		//print_r($this->oksm);
 		
-		$okv = simplexml_load_file('okv.xml');
+		$okv = simplexml_load_file('base/okv.xml');
 		$this->okv = [];
 		foreach($okv->Currency as $currency) {
 			$icode = (string)$currency['Code'];
